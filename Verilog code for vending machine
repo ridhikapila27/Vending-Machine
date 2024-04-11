@@ -1,0 +1,240 @@
+module vendingmachine(item_number,nickel_in,dime_in,clock,reset,nickel_out,dispense);
+input [3:0] item_number;
+input nickel_in, dime_in,clock,reset;
+output reg nickel_out,dispense;
+reg [2:0] current_state, next_state;
+wire no1,no2,no3,no4,d1,d2,d3,d4;
+always@(posedge clock or reset)
+begin
+if(reset)
+begin
+    current_state<=0;
+    dispense<=0;
+    nickel_out<=0;
+ end
+else
+    current_state<=next_state;    
+
+end
+item1 i1(.nickel_in(nickel_in),.dime_in(dime_in),.clock(clock),.reset(reset),.nickel_out(no1),.dispense(d1));
+item2 i2(.nickel_in(nickel_in),.dime_in(dime_in),.clock(clock),.reset(reset),.nickel_out(no2),.dispense(d2));
+item3 i3(.nickel_in(nickel_in),.dime_in(dime_in),.clock(clock),.reset(reset),.nickel_out(no3),.dispense(d3));
+item4 i4(.nickel_in(nickel_in),.dime_in(dime_in),.clock(clock),.reset(reset),.nickel_out(no4),.dispense(d4));
+
+always@(*)
+begin
+    case(item_number)    
+        4'b0001:  //Rs. 15
+            begin nickel_out<=no1; dispense<=d1; end
+        
+        4'b0010: //Rs. 20
+            begin nickel_out<=no2; dispense<=d2; end
+        
+        4'b0100: //Rs. 25
+            begin nickel_out<=no3; dispense<=d3; end
+        
+        4'b1000: //Rs. 35
+            begin nickel_out<=no4; dispense<=d4; end     
+   
+    endcase
+end
+endmodule
+
+//nickel=Rs.5
+//dime=Rs.10
+module item1(nickel_in,dime_in,clock,reset,nickel_out,dispense);
+input nickel_in, dime_in,clock,reset;
+output reg nickel_out,dispense;
+reg [2:0] current_state, next_state;
+parameter s0=000, s5=001, s10=010, s15=011, s20=100, s25=101, s30=110, s35=111;
+
+always@(posedge clock or reset)
+begin
+if(reset)
+    current_state<=0;
+else
+    current_state<=next_state;    
+end
+
+always@(nickel_in,dime_in)
+begin
+case(current_state)
+    s0:
+    if(nickel_in) begin next_state<=s5; {nickel_out,dispense}=2'b00; end
+    else if(dime_in) begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    else begin next_state<=s0; {nickel_out, dispense}=2'b00; end
+    
+    s5:
+        if(nickel_in) begin next_state<=s10; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s15; {nickel_out, dispense}=2'b01; end
+        else begin next_state<=s5; {nickel_out, dispense}=2'b00; end
+        
+    s10:
+            if(nickel_in) begin next_state<=s15; {nickel_out,dispense}=2'b01; end
+            else if(dime_in) begin next_state<=s20; {nickel_out, dispense}=2'b11; end
+            else begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    default:
+    next_state<=s0;
+    
+ endcase
+
+end
+endmodule
+
+
+module item2(nickel_in,dime_in,clock,reset,nickel_out,dispense);
+input nickel_in, dime_in,clock,reset;
+output reg nickel_out,dispense;
+reg [2:0] current_state, next_state;
+parameter s0=000, s5=001, s10=010, s15=011, s20=100, s25=101, s30=110, s35=111;
+
+always@(posedge clock or reset)
+begin
+if(reset)
+    current_state<=0;
+else
+    current_state<=next_state;    
+end
+
+always@(nickel_in,dime_in)
+begin
+case(current_state)
+    s0:
+    if(nickel_in) begin next_state<=s5; {nickel_out,dispense}=2'b00; end
+    else if(dime_in) begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    else begin next_state<=s0; {nickel_out, dispense}=2'b00; end
+    
+    s5:
+        if(nickel_in) begin next_state<=s10; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s5; {nickel_out, dispense}=2'b00; end
+        
+    s10:
+            if(nickel_in) begin next_state<=s15; {nickel_out,dispense}=2'b00; end
+            else if(dime_in) begin next_state<=s20; {nickel_out, dispense}=2'b01; end
+            else begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    
+    s15:
+            if(nickel_in) begin next_state<=s20; {nickel_out,dispense}=2'b01; end
+            else if(dime_in) begin next_state<=s25; {nickel_out, dispense}=2'b11; end
+            else begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+    
+    default:
+    next_state<=s0;
+    
+ endcase
+
+end
+endmodule
+
+
+module item3(nickel_in,dime_in,clock,reset,nickel_out,dispense);
+input nickel_in, dime_in,clock,reset;
+output reg nickel_out,dispense;
+reg [2:0] current_state, next_state;
+parameter s0=000, s5=001, s10=010, s15=011, s20=100, s25=101, s30=110, s35=111;
+
+always@(posedge clock or reset)
+begin
+if(reset)
+    current_state<=0;
+else
+    current_state<=next_state;    
+end
+
+always@(nickel_in,dime_in)
+begin
+case(current_state)
+    s0:
+        if(nickel_in) begin next_state<=s5; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s0; {nickel_out, dispense}=2'b00; end
+        
+    s5:
+        if(nickel_in) begin next_state<=s10; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s5; {nickel_out, dispense}=2'b00; end
+        
+    s10:
+        if(nickel_in) begin next_state<=s15; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s20; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    
+    s15:
+        if(nickel_in) begin next_state<=s20; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s25; {nickel_out, dispense}=2'b01; end
+        else begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+        
+    s20:
+        if(nickel_in) begin next_state<=s25; {nickel_out,dispense}=2'b01; end
+        else if(dime_in) begin next_state<=s30; {nickel_out, dispense}=2'b11; end
+        else begin next_state<=s20; {nickel_out, dispense}=2'b00; end  
+        
+    default:
+        next_state<=s0;
+    
+ endcase
+
+end
+endmodule
+
+
+module item4(nickel_in,dime_in,clock,reset,nickel_out,dispense);
+input nickel_in, dime_in,clock,reset;
+output reg nickel_out,dispense;
+reg [2:0] current_state, next_state;
+parameter s0=000, s5=001, s10=010, s15=011, s20=100, s25=101, s30=110, s35=111;
+
+always@(posedge clock or reset)
+begin
+if(reset)
+    current_state<=0;
+else
+    current_state<=next_state;    
+end
+
+always@(nickel_in,dime_in)
+begin
+case(current_state)
+    s0:
+        if(nickel_in) begin next_state<=s5; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s0; {nickel_out, dispense}=2'b00; end
+        
+    s5:
+        if(nickel_in) begin next_state<=s10; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s5; {nickel_out, dispense}=2'b00; end
+        
+    s10:
+        if(nickel_in) begin next_state<=s15; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s20; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s10; {nickel_out, dispense}=2'b00; end
+    
+    s15:
+        if(nickel_in) begin next_state<=s20; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s25; {nickel_out, dispense}=2'b01; end
+        else begin next_state<=s15; {nickel_out, dispense}=2'b00; end
+        
+    s20:
+        if(nickel_in) begin next_state<=s25; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s30; {nickel_out, dispense}=2'b00; end
+        else begin next_state<=s20; {nickel_out, dispense}=2'b00; end  
+    
+    s25:
+        if(nickel_in) begin next_state<=s30; {nickel_out,dispense}=2'b00; end
+        else if(dime_in) begin next_state<=s35; {nickel_out, dispense}=2'b01; end
+        else begin next_state<=s25; {nickel_out, dispense}=2'b00; end  
+        
+    s30:
+        if(nickel_in) begin next_state<=s35; {nickel_out,dispense}=2'b01; end
+        else if(dime_in) begin next_state<=s0; {nickel_out, dispense}=2'b11; end
+        else begin next_state<=s30; {nickel_out, dispense}=2'b00; end  
+                
+    default:
+        next_state<=s0;
+    
+ endcase
+
+end
+endmodule
